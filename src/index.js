@@ -17,7 +17,7 @@ class OTPInput extends Component {
   }
 
   static defaultProps = {
-    onChange: () => null,
+    onChange: () => undefined,
     otpLength: 6,
     tintColor: '#FB6C6A',
     offTintColor: '#BBBCBE',
@@ -42,7 +42,11 @@ class OTPInput extends Component {
   }
 
   componentDidMount() {
-    this.focus()
+    setTimeout(() => {
+      // Prevent 'Argument 0 (NSNumber) of UIManager.measure must not be null from react-navigation
+      this.focus()
+    }, 1500)
+
     this.blinkAnimation()
   }
 
@@ -143,7 +147,7 @@ class OTPInput extends Component {
           ref={(input) => (this.textInput = input)}
           onChangeText={this.handleChangeText}
           style={{ width: 0, height: 0 }}
-          value={internalVal}
+          value={internalVal || 0}
           minLength={otpLength}
           maxLength={otpLength}
           returnKeyType="done"
