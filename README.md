@@ -1,10 +1,15 @@
 # react-native-otp
 
+ <!---
 [![npm version](https://badge.fury.io/js/react-native-otp.svg)](https://badge.fury.io/js/react-native-otp)
 [![npm](https://img.shields.io/npm/dm/react-native-otp.svg?maxAge=2592000)]()
-[![npm](https://img.shields.io/npm/dt/react-native-otp.svg?maxAge=2592000)]()   
+[![npm](https://img.shields.io/npm/dt/react-native-otp.svg?maxAge=2592000)]()    --->
 
 OTP Input component for React Native
+
+## Diferences between thuansb/react-native-otp
+- Easy to remove wrong caracters
+- Better focus handling and highlight
 
 ## Features
 
@@ -21,11 +26,11 @@ OTP Input component for React Native
 
 NPM
 
-```npm install react-native-otp```
+```npm install https://github.com/ebellumat/react-native-otp.git```
 
 Yarn
 
-```yarn add react-native-otp```
+```yarn add https://github.com/ebellumat/react-native-otp.git```
 
 ## Usage
 
