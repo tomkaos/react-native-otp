@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, Text } from 'react-native';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import { View, StyleSheet, TextInput, Text } from 'react-native'
+import PropTypes from 'prop-types'
 
 class OTPInput extends Component {
-
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
@@ -13,7 +12,8 @@ class OTPInput extends Component {
     containerStyle: PropTypes.object,
     cellStyle: PropTypes.object,
     defaultValue: PropTypes.string,
-    editable: PropTypes.bool
+    editable: PropTypes.bool,
+    focusHighlight: PropTypes.bool
   }
 
   static defaultProps = {
@@ -23,52 +23,104 @@ class OTPInput extends Component {
     offTintColor: '#BBBCBE',
     containerStyle: {},
     cellStyle: {}
-  };
+  }
 
-  textInput = null;
+  textInput = null
 
   state = {
     internalVal: this.props.value || this.props.defaultValue
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.hasOwnProperty('value') && nextProps.value !== this.state.internalVal) {
-      this.setState({ internalVal: nextProps.value });
+    if (
+      nextProps.hasOwnProperty('value') &&
+      nextProps.value !== this.state.internalVal
+    ) {
+      this.setState({ internalVal: nextProps.value })
     }
   }
 
   componentDidMount() {
-    this.focus();
-  };
+    this.focus()
+    this.blinkAnimation()
+  }
+
+  blinkAnimation() {
+    const { tintColor, focusHighlight } = this.props
+    if (focusHighlight) {
+      let transparency = 0
+      let increase = true
+      const blinkInterval = setInterval(() => {
+        if (increase) {
+          transparency = transparency + 5
+          if (transparency >= 255) {
+            increase = false
+          }
+        } else {
+          transparency = transparency - 5
+          if (transparency <= 25) {
+            increase = true
+          }
+        }
+        // Converting to hex
+        this.setState({
+          blinkTintColor:
+            tintColor +
+            ('0' + Number(transparency).toString(16)).slice(-2).toUpperCase()
+        })
+        // Define blinking time in milliseconds
+        1
+      })
+      this.setState({ blinkInterval })
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.state.blinkInterval) {
+      clearInterval(this.state.blinkInterval)
+    }
+  }
 
   handleChangeText = (val) => {
-    const { onChange } = this.props;
-    
-    onChange(val);
+    const { onChange } = this.props
+
+    onChange(val)
     this.setState({ internalVal: val })
-  };
+  }
 
   // public methods
   inputRef() {
-    return this.textInput;
+    return this.textInput
   }
 
   focus() {
     if (this.props.editable !== false) {
-      this.inputRef().focus();
+      this.inputRef().focus()
     }
   }
 
   blur() {
-    this.inputRef().blur();
+    this.inputRef().blur()
   }
 
   isFocused() {
-    return this.inputRef().isFocused();
+    return this.inputRef().isFocused()
   }
 
   clear() {
     this.setState({ internalVal: '' })
+  }
+
+  handleFocus(index) {
+    const { internalVal } = this.state
+    let aux = [...internalVal]
+
+    for (var i = index; i < internalVal.length; i++) {
+      aux[i] = undefined
+      this.handleChangeText(aux.join(''))
+    }
+
+    this.textInput.focus()
   }
 
   render() {
@@ -79,14 +131,14 @@ class OTPInput extends Component {
       offTintColor,
       otpLength,
       ...otherProps
-    } = this.props;
+    } = this.props
 
-    const { internalVal } = this.state;
+    const { internalVal, blinkTintColor } = this.state
 
     return (
       <View>
         <TextInput
-          ref={input => (this.textInput = input)}
+          ref={(input) => (this.textInput = input)}
           onChangeText={this.handleChangeText}
           style={{ width: 0, height: 0 }}
           value={internalVal}
@@ -97,27 +149,33 @@ class OTPInput extends Component {
           {...otherProps}
         />
         <View style={[styles.container, containerStyle]}>
-            {Array(otpLength)
-              .fill()
-              .map((_, index) => (
-                <Text
-                  key={index}
-                  style={[
-                    styles.cell,
-                    cellStyle,
-                    {
-                      borderColor:
-                      internalVal && index === internalVal.length ? tintColor : offTintColor
-                    }
-                  ]}
-                  onPress={() => this.textInput.focus()}
-                >
-                  {internalVal && internalVal.length > index ? internalVal[index] : " "}
-                </Text>
-              ))}
+          {Array(otpLength)
+            .fill()
+            .map((_, index) => (
+              <Text
+                key={index}
+                style={[
+                  styles.cell,
+                  cellStyle,
+                  {
+                    borderColor:
+                      (internalVal && index === internalVal.length) ||
+                      (!internalVal && index == 0)
+                        ? blinkTintColor
+                        : offTintColor
+                  }
+                ]}
+                onPress={() => {
+                  this.handleFocus(index)
+                }}>
+                {internalVal && internalVal.length > index
+                  ? internalVal[index]
+                  : ' '}
+              </Text>
+            ))}
         </View>
       </View>
-    );
+    )
   }
 }
 
@@ -128,6 +186,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   cell: {
+    height: 45,
+    borderRadius: 4,
     paddingVertical: 11,
     width: 40,
     margin: 5,
@@ -136,7 +196,6 @@ const styles = StyleSheet.create({
     color: '#000',
     borderWidth: 1.5
   }
-});
+})
 
-export default OTPInput;
-
+export default OTPInput
