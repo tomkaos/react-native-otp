@@ -22,7 +22,8 @@ class OTPInput extends Component {
     tintColor: '#FB6C6A',
     offTintColor: '#BBBCBE',
     containerStyle: {},
-    cellStyle: {}
+    cellStyle: {},
+    focusHighlight: true
   }
 
   textInput = null
@@ -113,11 +114,12 @@ class OTPInput extends Component {
 
   handleFocus(index) {
     const { internalVal } = this.state
-    let aux = [...internalVal]
-
-    for (var i = index; i < internalVal.length; i++) {
-      aux[i] = undefined
-      this.handleChangeText(aux.join(''))
+    if (internalVal && internalVal.length) {
+      let aux = [...internalVal]
+      for (var i = index; i < internalVal.length; i++) {
+        aux[i] = undefined
+        this.handleChangeText(aux.join(''))
+      }
     }
 
     this.textInput.focus()
