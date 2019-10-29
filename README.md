@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
 | offTintColor                   | string           | '#BBBCBE'      | cell under line color |
 | containerStyle                 | object           | {}             | overide container style |
 | cellStyle                      | object           | {}             | overide cell style |
+| focusHighlight                 | bool             | true           | highlight the focused input, blinking fade |
 | all other Text Input properties | | | Use this if you want to apply any other property to Text Input |   
 
 ## License
