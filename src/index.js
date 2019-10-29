@@ -12,7 +12,8 @@ class OTPInput extends Component {
     containerStyle: PropTypes.object,
     cellStyle: PropTypes.object,
     defaultValue: PropTypes.string,
-    editable: PropTypes.bool
+    editable: PropTypes.bool,
+    focusHighlight: PropTypes.bool
   }
 
   static defaultProps = {
@@ -21,7 +22,8 @@ class OTPInput extends Component {
     tintColor: '#FB6C6A',
     offTintColor: '#BBBCBE',
     containerStyle: {},
-    cellStyle: {}
+    cellStyle: {},
+    focusHighlight: true
   }
 
   textInput = null
@@ -41,6 +43,43 @@ class OTPInput extends Component {
 
   componentDidMount() {
     this.focus()
+    this.blinkAnimation()
+  }
+
+  blinkAnimation() {
+    const { tintColor, focusHighlight } = this.props
+    if (focusHighlight) {
+      let transparency = 0
+      let increase = true
+      const blinkInterval = setInterval(() => {
+        if (increase) {
+          transparency = transparency + 5
+          if (transparency >= 255) {
+            increase = false
+          }
+        } else {
+          transparency = transparency - 5
+          if (transparency <= 25) {
+            increase = true
+          }
+        }
+        // Converting to hex
+        this.setState({
+          blinkTintColor:
+            tintColor +
+            ('0' + Number(transparency).toString(16)).slice(-2).toUpperCase()
+        })
+        // Define blinking time in milliseconds
+        1
+      })
+      this.setState({ blinkInterval })
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.state.blinkInterval) {
+      clearInterval(this.state.blinkInterval)
+    }
   }
 
   handleChangeText = (val) => {
@@ -96,7 +135,7 @@ class OTPInput extends Component {
       ...otherProps
     } = this.props
 
-    const { internalVal } = this.state
+    const { internalVal, blinkTintColor } = this.state
 
     return (
       <View>
@@ -122,12 +161,15 @@ class OTPInput extends Component {
                   cellStyle,
                   {
                     borderColor:
-                      internalVal && index === internalVal.length
-                        ? tintColor
+                      (internalVal && index === internalVal.length) ||
+                      (!internalVal && index == 0)
+                        ? blinkTintColor
                         : offTintColor
                   }
                 ]}
-                onPress={() => this.handleFocus(index)}>
+                onPress={() => {
+                  this.handleFocus(index)
+                }}>
                 {internalVal && internalVal.length > index
                   ? internalVal[index]
                   : ' '}
@@ -146,6 +188,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   cell: {
+    height: 45,
+    borderRadius: 4,
     paddingVertical: 11,
     width: 40,
     margin: 5,
