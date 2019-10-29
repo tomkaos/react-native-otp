@@ -15,7 +15,7 @@ OTP Input component for React Native
 
 ## Preview
 
-![](https://thumbs.gfycat.com/AccurateGentleAustraliankestrel-size_restricted.gif)
+![](https://thumbs.gfycat.com/ImpassionedQuickAmericangoldfinch-size_restricted.gif)
 
 ## Install
 
