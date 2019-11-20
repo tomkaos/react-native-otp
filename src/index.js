@@ -32,13 +32,16 @@ class OTPInput extends Component {
     internalVal: this.props.value || this.props.defaultValue
   }
 
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     if (
       nextProps.hasOwnProperty('value') &&
-      nextProps.value !== this.state.internalVal
+      nextProps.value !== prevState.internalVal
     ) {
-      this.setState({ internalVal: nextProps.value })
+      return {
+        internalVal: nextProps.value
+      };
     }
+    return null;
   }
 
   componentDidMount() {
@@ -167,7 +170,7 @@ class OTPInput extends Component {
                     borderColor:
                       (internalVal && index === internalVal.length) ||
                       (!internalVal && index == 0)
-                        ? blinkTintColor
+                        ? tintColor
                         : offTintColor
                   }
                 ]}
