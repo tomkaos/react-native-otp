@@ -13,7 +13,8 @@ class OTPInput extends Component {
     cellStyle: PropTypes.object,
     defaultValue: PropTypes.string,
     editable: PropTypes.bool,
-    focusHighlight: PropTypes.bool
+    focusHighlight: PropTypes.bool,
+    autoFocus: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -23,7 +24,8 @@ class OTPInput extends Component {
     offTintColor: '#BBBCBE',
     containerStyle: {},
     cellStyle: {},
-    focusHighlight: true
+    focusHighlight: true,
+    autoFocus: false,
   }
 
   textInput = null
@@ -45,12 +47,13 @@ class OTPInput extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      // Prevent 'Argument 0 (NSNumber) of UIManager.measure must not be null from react-navigation
-      this.focus()
-    }, 1500)
-
-    this.blinkAnimation()
+    if (this.props.autoFocus) {
+      setTimeout(() => {
+        // Prevent 'Argument 0 (NSNumber) of UIManager.measure must not be null from react-navigation
+        this.focus()
+      }, 1500)
+    }
+    //this.blinkAnimation()
   }
 
   blinkAnimation() {
