@@ -135,6 +135,7 @@ class OTPInput extends Component {
       if (this.props.handleError) {
         this.props.handleError();
       }
+      this.blur();
     } else {
       if (internalVal && internalVal.length) {
         let aux = [...internalVal]
@@ -143,8 +144,8 @@ class OTPInput extends Component {
           this.handleChangeText(aux.join(''))
         }
       }
+      this.textInput.focus()
     }
-    this.textInput.focus()
   }
 
   render() {
