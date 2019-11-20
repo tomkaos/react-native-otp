@@ -15,6 +15,8 @@ class OTPInput extends Component {
     editable: PropTypes.bool,
     focusHighlight: PropTypes.bool,
     autoFocus: PropTypes.bool,
+    hasError: PropTypes.bool,
+    handleError: PropTypes.func,
   }
 
   static defaultProps = {
@@ -26,21 +28,25 @@ class OTPInput extends Component {
     cellStyle: {},
     focusHighlight: true,
     autoFocus: false,
+    hasError: false,
   }
 
   textInput = null
 
   state = {
-    internalVal: this.props.value || this.props.defaultValue
+    internalVal: this.props.value || this.props.defaultValue,
+    hasError: this.props.hasError
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (
-      nextProps.hasOwnProperty('value') &&
-      nextProps.value !== prevState.internalVal
+      (nextProps.hasOwnProperty('value') &&
+      nextProps.value !== prevState.internalVal) ||
+      (nextProps.hasError !== prevState.hasError)
     ) {
       return {
-        internalVal: nextProps.value
+        internalVal: nextProps.value,
+        hasError: nextProps.hasError,
       };
     }
     return null;
@@ -56,7 +62,7 @@ class OTPInput extends Component {
     //this.blinkAnimation()
   }
 
-  blinkAnimation() {
+  /* blinkAnimation() {
     const { tintColor, focusHighlight } = this.props
     if (focusHighlight) {
       let transparency = 0
@@ -84,13 +90,13 @@ class OTPInput extends Component {
       })
       this.setState({ blinkInterval })
     }
-  }
+  } */
 
-  componentWillUnmount() {
+  /* componentWillUnmount() {
     if (this.state.blinkInterval) {
       clearInterval(this.state.blinkInterval)
     }
-  }
+  } */
 
   handleChangeText = (val) => {
     const { onChange } = this.props
@@ -123,15 +129,21 @@ class OTPInput extends Component {
   }
 
   handleFocus(index) {
-    const { internalVal } = this.state
-    if (internalVal && internalVal.length) {
-      let aux = [...internalVal]
-      for (var i = index; i < internalVal.length; i++) {
-        aux[i] = undefined
-        this.handleChangeText(aux.join(''))
+    const { internalVal, hasError } = this.state;
+    if (hasError) {
+      this.handleChangeText('');
+      if (this.props.handleError) {
+        this.props.handleError();
+      }
+    } else {
+      if (internalVal && internalVal.length) {
+        let aux = [...internalVal]
+        for (var i = index; i < internalVal.length; i++) {
+          aux[i] = undefined
+          this.handleChangeText(aux.join(''))
+        }
       }
     }
-
     this.textInput.focus()
   }
 
